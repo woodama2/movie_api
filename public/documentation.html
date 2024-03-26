@@ -47,7 +47,7 @@
             Return data (description, genre, director, image URL, whether it's
             featured or not) about a single movie by title to the user
           </td>
-          <td>/movies/:title</td>
+          <td>/movies/[title]</td>
           <td>GET</td>
           <td>None</td>
           <td>None</td>
@@ -56,24 +56,17 @@
             description, genre, director, image URL, whether it's featured of
             not. Example:
             <code>
-              { Title: 'Pulp Fiction', Description: 'The lives of two mob
-              hitmen, a boxer, a gangster and his wife, and a pair of diner
-              bandits intertwine in four tales of violence and redemption.',
-              Genre: { Name: 'Drama', Description: 'In film and television,
-              drama is a category or genre of narrative fiction (or
-              semi-fiction) intended to be more serious than humorous in
-              tone.[1] The drama of this kind is usually qualified with
-              additional terms that specify its particular super-genre,
-              macro-genre, or micro-genre,[2] such as soap opera, police crime
-              drama, political drama, legal drama, historical drama, domestic
-              drama, teen drama, and comedy-drama (dramedy).', }, Director: {
-              Name: 'Quentin Tarantino', Bio: 'An American film director,
-              screenwriter, and actor. His films are characterized by stylized
-              violence, extended dialogue including a pervasive use of
-              profanity, and references to popular culture.', Birth: 1963, },
-              ImageURL:
-              'https://en.wikipedia.org/wiki/File:Pulp_Fiction_(1994)_poster.jpg#/media/File:Pulp_Fiction_(1994)_poster.jpg',
-              Featured: false, },
+              { _id: ObjectId('660069f18cd1a5d7936bbad1'), Title: 'The Shawshank
+              Redemption' Description: 'Two imprisoned men bond over a number of
+              years, finding solace and eventual redemption through acts of
+              common decency.', Genre: { Name: 'Drama' Description: 'Drama is a
+              genre of narrative fiction or semi-fiction intended to be more
+              serious than humorous in tone.' }, Director: { Name: 'Frank
+              Darabont' Bio: 'Frank Darabont is a Hungarian-American film
+              director, screenwriter, and producer. He is best known for his
+              work on films such as The Shawshank Redemption an d The Green
+              Mile.', Birth: '1959', Death: null }, ImagePath:
+              'shawshankredemption.png', Featured: true }
             </code>
           </td>
         </tr>
@@ -82,7 +75,7 @@
             Return data about a genre (description) by name/title (e.g.
             "Thriller")
           </td>
-          <td>movies/genre/:genreName</td>
+          <td>movies/genre/[genreName]</td>
           <td>GET</td>
           <td>None</td>
           <td>None</td>
@@ -90,14 +83,9 @@
             A JSON object holding data about a genre, containing a name, and
             description. Example:
             <code>
-              { Name: 'Drama', Description: 'In film and television, drama is a
-              category or genre of narrative fiction (or semi-fiction) intended
-              to be more serious than humorous in tone.[1] The drama of this
-              kind is usually qualified with additional terms that specify its
-              particular super-genre, macro-genre, or micro-genre,[2] such as
-              soap opera, police crime drama, political drama, legal drama,
-              historical drama, domestic drama, teen drama, and comedy-drama
-              (dramedy).', }
+              { Genre: {Name: 'Drama' Description: 'Drama is a genre of
+              narrative fiction or semi-fiction intended to be more serious than
+              humorous in tone.' } }
             </code>
           </td>
         </tr>
@@ -105,7 +93,7 @@
           <td>
             Return data about a director (bio, birth year, death year) by name
           </td>
-          <td>movies/directors/:directorName</td>
+          <td>movies/directors/[directorName]</td>
           <td>GET</td>
           <td>None</td>
           <td>None</td>
@@ -113,10 +101,12 @@
             A JSON object holding data about a single director, containing a
             first name, last name, bio, birth year, and death year. Example:
             <code>
-              { Name: 'Quentin Tarantino', Bio: 'An American film director,
-              screenwriter, and actor. His films are characterized by stylized
-              violence, extended dialogue including a pervasive use of
-              profanity, and references to popular culture.', Birth: 1963, }
+              { Director: { Name: 'Wes Anderson', Bio: 'Wes Anderson is an
+              American film director, producer, and screenwriter. His films are
+              known for their distinctive visual and narrative style. Anderson
+              is recognized for films like The Royal Tenenbaums, Moonrise
+              Kingdom, and The Grand Budapest Hotel.', Birth: '1969', Death:
+              null} }
             </code>
           </td>
         </tr>
@@ -127,12 +117,18 @@
           <td>None</td>
           <td>
             A JSON object holding data about the user to add, structured like:
-            <code> { name: 'Mandy', favoriteMovies: [], } </code>
+            <code>
+              { username: 'John Doe', password: 'password123', email:
+              'john.doe@example.com', birthday: '1990-05-15', favorites: [], }
+            </code>
           </td>
           <td>
             A JSON object holding data about the user that was added, including
             an ID:
-            <code> { id: 1, name: 'Mandy', favoriteMovies: [], } </code>
+            <code>
+              { id: 1, username: 'John Doe', password: 'password123', email:
+              'john.doe@example.com', birthday: '1990-05-15', favorites: [], }
+            </code>
           </td>
         </tr>
         <tr>
@@ -140,14 +136,17 @@
             Allow users to update their user info (username, password, email,
             date of birth)
           </td>
-          <td>/users/:id</td>
+          <td>/users/[username]</td>
           <td>PUT</td>
           <td>None</td>
           <td>None</td>
           <td>
             A JSON object holding data about the user that was added, including
             an ID:
-            <code> { id: 1, name: 'Mandy', favoriteMovies: [], } </code>
+            <code>
+              { id: 1, username: 'John Doe', password: 'password123', email:
+              'john.doe@example.com', birthday: '1990-05-15', favorites: [], }
+            </code>
           </td>
         </tr>
         <tr>
@@ -155,7 +154,7 @@
             Allow users to add a movie to their list of favorites (showing only
             a text that a movie has been added)
           </td>
-          <td>/users/:id/:movieTitle</td>
+          <td>/users/[username]/movies/[MovieID]</td>
           <td>POST</td>
           <td>None</td>
           <td>None</td>
@@ -169,7 +168,7 @@
             Allow users to remove a movie from their list of favorites (showing
             only a text that a movie has been removed)
           </td>
-          <td>/users/:id/:movieTitle</td>
+          <td>/users/[username]/movies/[MovieID]</td>
           <td>DELETE</td>
           <td>None</td>
           <td>None</td>
@@ -183,7 +182,7 @@
             Allow existing users to deregister (showing only a text that a user
             email has been removed)
           </td>
-          <td>/users/:id</td>
+          <td>/users/[username]</td>
           <td>DELETE</td>
           <td>None</td>
           <td>None</td>
