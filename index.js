@@ -17,6 +17,31 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
+const cors = require('cors');
+const { check, validationResult } = require('express-validator');
+
+// To only allow certain origins to have access...
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        // If a specific origin isn't found on the list of allowed origins
+        let message =
+          "The CORS policy for this application doesn't allow access from origin " +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
+
+// To allow all origins...
+// app.use(cors({}));
+
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
@@ -100,33 +125,60 @@ app.get('/secreturl', (req, res) => {
   birthday: Date,
   favorites: Array
 }*/
-app.post('/users', async (req, res) => {
-  await Users.findOne({ username: req.body.username })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(req.body.username + ' already exists');
-      } else {
-        Users.create({
-          username: req.body.username,
-          password: req.body.password,
-          email: req.body.email,
-          birthday: req.body.birthday,
-          favorites: req.body.favorites,
-        })
-          .then((user) => {
-            res.status(201).json(user);
+app.post(
+  '/users',
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEMpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) whyich means
+  //minimum value of 5 characters are only allowed
+  [
+    check('username', 'username is required').isLength({ min: 5 }),
+    check(
+      'username',
+      'username contains non alphanumeric characters - not allowed.'
+    ).isAlphanumeric(),
+    check('password', 'password is required').not().isEmpty(),
+    check('email', 'email is required').not().isEmpty(),
+    check('email', 'email does not appear to be valid').isEmail(),
+  ],
+  async (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!error.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.password);
+    await Users.findOne({ username: req.body.username }) // Search to see if a user with the requested username already exists
+      .then((user) => {
+        if (user) {
+          // If the user is found, send a response that it already exists
+          return res.status(400).send(req.body.username + ' already exists');
+        } else {
+          Users.create({
+            username: req.body.username,
+            password: hashedPassword,
+            email: req.body.email,
+            birthday: req.body.birthday,
+            favorites: req.body.favorites,
           })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-          });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-});
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  }
+);
 
 // CREATE
 // Add a movie to a user's list of favorites
@@ -295,8 +347,32 @@ app.get(
 }*/
 app.put(
   '/users/:username',
+
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEMpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) whyich means
+  //minimum value of 5 characters are only allowed
+  [
+    check('username', 'username is required').isLength({ min: 5 }),
+    check(
+      'username',
+      'username contains non alphanumeric characters - not allowed.'
+    ).isAlphanumeric(),
+    check('password', 'password is required').not().isEmpty(),
+    check('email', 'email is required').not().isEmpty(),
+    check('email', 'email does not appear to be valid').isEmail(),
+  ],
+
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!error.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
     // CONDITION TO CHECK ADDED HERE
     if (req.user.username !== req.params.username) {
       return res.status(400).send('Permission denied');
@@ -381,6 +457,11 @@ app.use((err, req, res, next) => {
 });
 
 // listen for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
+
+// app.listen(8080, () => {
+//   console.log('Your app is listening on port 8080.');
+// });
