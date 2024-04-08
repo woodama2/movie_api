@@ -41,10 +41,3 @@ let User = mongoose.model('User', userSchema);
 
 module.exports.Movie = Movie;
 module.exports.User = User;
-
-
-mongoimport --uri mongodb+srv://woodama2:OnvBvm9lsB5FjDt5@myflixdb.ovs9xd3.mongodb.net/myFlixDB --collection movies --type json --file /Users/mandy/Desktop/movies.json
-
-mongoimport --uri mongodb+srv://woodama2:OnvBvm9lsB5FjDt5@myflixdb.ovs9xd3.mongodb.net/myFlixDB --collection movies --type json --file movies.json
-
-mongoimport --uri mongodb+srv://woodama2:OnvBvm9lsB5FjDt5@myflixdb.ovs9xd3.mongodb.net/myFlixDB --collection users --type json --file users.json
