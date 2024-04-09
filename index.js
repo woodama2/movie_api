@@ -355,7 +355,7 @@ app.put(
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
   //which means "opposite of isEMpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) whyich means
+  //or use .isLength({min: 5}) which means
   //minimum value of 5 characters are only allowed
   [
     check('username', 'username is required').isLength({ min: 5 }),
@@ -364,7 +364,6 @@ app.put(
       'username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
     check('password', 'password is required').not().isEmpty(),
-    check('email', 'email is required').not().isEmpty(),
     check('email', 'email does not appear to be valid').isEmail(),
   ],
 
@@ -373,7 +372,7 @@ app.put(
     // check the validation object for errors
     let errors = validationResult(req);
 
-    if (!error.isEmpty()) {
+    if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
@@ -381,7 +380,7 @@ app.put(
     if (req.user.username !== req.params.username) {
       return res.status(400).send('Permission denied');
     }
-    // CONDITION ENDS
+    // CONDITION ENDS, finds user and updates their info
     await Users.findOneAndUpdate(
       { username: req.params.username },
       {
