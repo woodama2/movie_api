@@ -354,7 +354,7 @@ app.put(
 
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEMpty" in plain english "is not empty"
+  //which means "opposite of isEmpty" in plain english "is not empty"
   //or use .isLength({min: 5}) which means
   //minimum value of 5 characters are only allowed
   [
@@ -363,7 +363,8 @@ app.put(
       'username',
       'username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
-    check('password', 'password is required').not().isEmpty(),
+    // Make password optional if not provided
+    check('password').optional().not().isEmpty(),
     check('email', 'email does not appear to be valid').isEmail(),
   ],
 
