@@ -144,14 +144,13 @@ app.post(
       'username contains non alphanumeric characters - not allowed.'
     ).isAlphanumeric(),
     check('password', 'password is required').not().isEmpty(),
-    check('email', 'email is required').not().isEmpty(),
     check('email', 'email does not appear to be valid').isEmail(),
   ],
   async (req, res) => {
     // check the validation object for errors
     let errors = validationResult(req);
 
-    if (!error.isEmpty()) {
+    if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
