@@ -407,29 +407,51 @@ app.put(
 
 // DELETE
 // Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed)
+// app.delete(
+//   '/users/:username/:movieID',
+//   passport.authenticate('jwt', { session: false }),
+//   async (req, res) => {
+//     const username = req.params.username;
+//     const movieID = req.params.movieID;
+
+//     try {
+//       const user = await Users.findOne({ username }), {
+//         $pull: {favorites: req.params.MovieID}
+//       };
+
+//       if (user) {
+//         const initialLength = user.favorites.length;
+//         user.favorites = user.favorites.filter((title) => title !== movieID);
+//         res
+//           .status(200)
+//           .send(`${movieID} has been removed from ${username}'s array`);
+//       } else {
+//         res.status(400).send('no such user');
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send('Error: ' + err);
+//     }
+//   }
+// );
+
 app.delete(
   '/users/:username/:movieID',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    const username = req.params.username;
-    const movieID = req.params.movieID;
-
-    try {
-      const user = await Users.findOne({ username });
-
-      if (user) {
-        const initialLength = user.favorites.length;
-        user.favorites = user.favorites.filter((title) => title !== movieID);
-        res
-          .status(200)
-          .send(`${movieID} has been removed from ${username}'s array`);
-      } else {
-        res.status(400).send('no such user');
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error: ' + err);
-    }
+    await Users.findOneAndUpdate(
+      { username: req.params.username },
+      {
+        $pull: { favorites: req.params.movieID },
+      },
+      { new: true }
+    ) //This line makes sure that the updated document is returned
+      .then((updatedUser) => {
+        res.json(updatedUser);
+      })
+      .catch((err) => {
+        console.error(err), res.status(500).send('Error: ' + err);
+      });
   }
 );
 
