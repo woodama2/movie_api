@@ -160,7 +160,7 @@
           <td>None</td>
           <td>
             A JSON object holding data about the user, including an ID and the
-            new favorite:
+            new favorite.
           </td>
         </tr>
         <tr>
@@ -173,8 +173,8 @@
           <td>JWT</td>
           <td>None</td>
           <td>
-            A text message indicating whether a movie has been removed from the
-            user's list of favorites
+            A JSON object holding data about the user, including the updated
+            list of favorites (if any).
           </td>
         </tr>
         <tr>
@@ -189,6 +189,25 @@
           <td>
             A text message indicating whether the user was successfully
             deregistered.
+          </td>
+        </tr>
+        <tr>
+          <td>Allow existing users to login and produce a JWT bearer token.</td>
+          <td>/login</td>
+          <td>POST</td>
+          <td>JWT</td>
+          <td>
+            A JSON object holding data about the user to verify. Required fields
+            include:
+            <code> { username: 'John Doe', password: 'password123'} </code>
+          </td>
+          <td>
+            A JSON object holding data about the user including their JWT.
+            <code>
+              { id: 1, username: 'John Doe', password: 'password123', email:
+              'john.doe@example.com', birthday: '1990-05-15', favorites: [], },
+              {token: "string"}
+            </code>
           </td>
         </tr>
       </tbody>
