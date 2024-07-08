@@ -21,7 +21,12 @@ const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 
 // To only allow certain origins to have access...
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://myflix-2024.netlify.app'];
+let allowedOrigins = [
+  'http://localhost:8080',
+  'http://testsite.com',
+  'http://localhost:1234',
+  'https://myflix-2024.netlify.app',
+];
 
 app.use(
   cors({
@@ -397,7 +402,7 @@ app.put(
       { new: true }
     ) // This line makes sure that the updated document is returned
       .then((updatedUser) => {
-        res.status.(201).json(updatedUser);
+        res.status(201).json(updatedUser);
       })
       .catch((err) => {
         console.error(err);
