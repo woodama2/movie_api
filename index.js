@@ -377,6 +377,8 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
+    let hashedPassword = Users.hashPassword(req.body.password);
+
     // CONDITION TO CHECK ADDED HERE
     if (req.user.username !== req.params.username) {
       return res.status(400).send('Permission denied');
@@ -387,16 +389,15 @@ app.put(
       {
         $set: {
           username: req.body.username,
-          password: req.body.password,
+          password: hashedPassword,
           email: req.body.email,
           birthday: req.body.birthday,
-          favorites: req.body.favorites,
         },
       },
       { new: true }
     ) // This line makes sure that the updated document is returned
       .then((updatedUser) => {
-        res.json(updatedUser);
+        res.status.(201).json(updatedUser);
       })
       .catch((err) => {
         console.error(err);
