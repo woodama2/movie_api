@@ -23,6 +23,7 @@ const { check, validationResult } = require('express-validator');
 // To only allow certain origins to have access...
 let allowedOrigins = [
   'http://localhost:8080',
+  'http://localhost:4200',
   'http://testsite.com',
   'http://localhost:1234',
   'https://myflix-2024.netlify.app',
