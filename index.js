@@ -46,8 +46,10 @@ app.use(
   })
 );
 
-// To allow all origins...
-// app.use(cors({}));
+/**
+ * To allow all origins...
+ * app.use(cors({}));
+ */
 
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -135,17 +137,24 @@ app.get('/secreturl', (req, res) => {
 
 // CRUD
 
-// CREATE
-// Add a user
-/* We'll expect JSON in this format
-{
-  ID: Integer,
-  username: String,
-  password: String,
-  email: String,
-  birthday: Date,
-  favorites: Array
-}*/
+/**
+ * We'll expect JSON in this format for data = users
+ * {
+ * ID: integer,
+ * username: string,
+ * password: string,
+ * email: string,
+ * birthday: date,
+ * favorites: array
+ * }
+ */
+
+/**
+ * CREATE (i.e. POST) new user
+ * return JSON object when at '/users' endpoint
+ * request body = username*, password*, email*, birthday
+ * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
+ */
 app.post(
   '/users',
   // Validation logic here for request
@@ -200,8 +209,12 @@ app.post(
   }
 );
 
-// CREATE
-// Add a movie to a user's list of favorites
+/**
+ * CREATE (i.e. POST) add a movie to a user's list of favorites
+ * return JSON object when at '/users/:username/:MovieID' endpoint
+ * request body = username*, MovieID
+ * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
+ */
 app.post(
   '/users/:username/:MovieID',
   passport.authenticate('jwt', { session: false }),
@@ -223,8 +236,29 @@ app.post(
   }
 );
 
-// READ
-// Return a list of ALL movies to the user
+/**
+ * We'll expect JSON in this format for data = movies
+ * {
+ * ID: integer,
+ * Title: string,
+ * Description: string,
+ * Genre: Object,
+ *  Genre.Name: string,
+ *  Genre.Description: string,
+ * Director: Object,
+ *  Director.Name: string,
+ *  Director.Bio: string,
+ *  Director.Birth: date,
+ *  Director.Death: date,
+ * ImagePath: string,
+ * Featured: boolean,
+ * }
+ */
+
+/**
+ * READ (i.e. GET) all movies
+ * return JSON object when at '/movies' endpoint and user logged in
+ */
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -240,8 +274,10 @@ app.get(
   }
 );
 
-// READ
-// Get all users
+/**
+ * READ (i.e. GET) all users
+ * return JSON object when at '/users' endpoint and user logged in
+ */
 app.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
@@ -257,8 +293,10 @@ app.get(
   }
 );
 
-// READ
-// Get a user by username
+/**
+ * READ (i.e. GET) a single user by username
+ * return JSON object when at '/users/:username' endpoint and user logged in
+ */
 app.get(
   '/users/:username',
   passport.authenticate('jwt', { session: false }),
@@ -274,8 +312,12 @@ app.get(
   }
 );
 
-// READ
-// Return data (description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
+/**
+ * READ (i.e. GET) a single movie by Title
+ * return JSON object when at '/movies/:title' endpoint and user logged in
+ * request body = movie.Title
+ * response body = Title, Description, Genre, Genre.Name, Genre.Description, Director, Director.Name, Director.Bio, Director.Birth, Director.Death, ImagePath, Featured, _id
+ */
 app.get(
   '/movies/:title',
   passport.authenticate('jwt', { session: false }),
@@ -296,8 +338,12 @@ app.get(
   }
 );
 
-// READ
-// Return data about a genre (description) by name/title (e.g. "Thriller")
+/**
+ * READ (i.e. GET) a single movie's genre description by Name
+ * return JSON object when at '/movies/genre/:genreName' endpoint and user logged in
+ * request body = movie.genre.genreName
+ * response body = Genre.Name, Genre.Description
+ */
 app.get(
   '/movies/genre/:genreName',
   passport.authenticate('jwt', { session: false }),
@@ -322,8 +368,12 @@ app.get(
   }
 );
 
-// READ
-// Return data about a director (bio, birth year, death year) by name;
+/**
+ * READ (i.e. GET) a single movie's director description by Name
+ * return JSON object when at '/movies/director/:directorName' endpoint and user logged in
+ * request body = movie.Director.directorName
+ * response body = Director.Name, Director.Bio, Director.Birth, Director.Death
+ */
 app.get(
   '/movies/directors/:directorName',
   passport.authenticate('jwt', { session: false }),
@@ -353,18 +403,25 @@ app.get(
 );
 
 // UPDATE
-// Update a user's info, by username
-/* We’ll expect JSON in this format
-{
-  username: String,
-  (required)
-  password: String,
-  (required)
-  email: String,
-  (required)
-  birthday: Date,
-  favorites: Array
-}*/
+
+/**
+ * We'll expect JSON in this format for data = users
+ * {
+ * ID: integer,
+ * username: string, (required)
+ * password: string, (required)
+ * email: string, (required)
+ * birthday: date,
+ * favorites: array
+ * }
+ */
+
+/**
+ * UPDATE (i.e. PUT) a single user's data when changed
+ * return JSON object when at '/users/:username' endpoint and user logged in
+ * request body = user.username, user.password, user.email, user.birthday
+ * response body = user.username, user.password, user.email, user.birthday
+ */
 app.put(
   '/users/:username',
 
@@ -423,7 +480,13 @@ app.put(
 );
 
 // DELETE
-// Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed)
+
+/**
+ * DELETE a single user's single favorite movie
+ * return JSON object when at '/users/:username/:movieID endpoint and user logged in
+ * request body = user.username, movies.movieID
+ * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
+ */
 app.delete(
   '/users/:username/:movieID',
   passport.authenticate('jwt', { session: false }),
@@ -444,8 +507,12 @@ app.delete(
   }
 );
 
-// DELETE
-// Delete a user by username
+/**
+ * DELETE a single user
+ * When at '/users/:username/ endpoint called and user logged in
+ * request body = user.username
+ * response body = 200 message that user was deleted
+ */
 app.delete(
   '/users/:username',
   passport.authenticate('jwt', { session: false }),
@@ -480,3 +547,8 @@ app.listen(port, '0.0.0.0', () => {
 // app.listen(8080, () => {
 //   console.log('Your app is listening on port 8080.');
 // });
+
+/** app.listen(8080, () => {
+ * console.log('Your app is listening on port 8080.');
+ * });
+ */
