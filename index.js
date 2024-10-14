@@ -76,12 +76,18 @@ app.use(morgan('combined', { stream: accessLogStream }));
 
 // FILE PATHS
 
-// default text response when at /
+/**
+ * GET homepage
+ * default text response when at '/'
+ */
 app.get('/', (req, res) => {
   res.send('Welcome to MyFlix!');
 });
 
-// return JSON object when at /movies
+/**
+ * GET all movies
+ * return JSON object when at '/movies' endpoint
+ */
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -97,7 +103,10 @@ app.get(
   }
 );
 
-// return JSON object when at /users
+/**
+ * GET all users
+ * return JSON object when at '/users' endpoint
+ */
 app.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
