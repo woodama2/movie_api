@@ -82,6 +82,7 @@ app.use(morgan('combined', { stream: accessLogStream }));
  * GET homepage
  * default text response when at '/'
  */
+
 app.get('/', (req, res) => {
   res.send('Welcome to MyFlix!');
 });
@@ -90,6 +91,7 @@ app.get('/', (req, res) => {
  * GET all movies
  * return JSON object when at '/movies' endpoint
  */
+
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -109,6 +111,7 @@ app.get(
  * GET all users
  * return JSON object when at '/users' endpoint
  */
+
 app.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
@@ -155,6 +158,7 @@ app.get('/secreturl', (req, res) => {
  * request body = username*, password*, email*, birthday
  * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
  */
+
 app.post(
   '/users',
   // Validation logic here for request
@@ -215,6 +219,7 @@ app.post(
  * request body = username*, MovieID
  * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
  */
+
 app.post(
   '/users/:username/:MovieID',
   passport.authenticate('jwt', { session: false }),
@@ -259,6 +264,7 @@ app.post(
  * READ (i.e. GET) all movies
  * return JSON object when at '/movies' endpoint and user logged in
  */
+
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
@@ -278,6 +284,7 @@ app.get(
  * READ (i.e. GET) all users
  * return JSON object when at '/users' endpoint and user logged in
  */
+
 app.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
@@ -297,6 +304,7 @@ app.get(
  * READ (i.e. GET) a single user by username
  * return JSON object when at '/users/:username' endpoint and user logged in
  */
+
 app.get(
   '/users/:username',
   passport.authenticate('jwt', { session: false }),
@@ -318,6 +326,7 @@ app.get(
  * request body = movie.Title
  * response body = Title, Description, Genre, Genre.Name, Genre.Description, Director, Director.Name, Director.Bio, Director.Birth, Director.Death, ImagePath, Featured, _id
  */
+
 app.get(
   '/movies/:title',
   passport.authenticate('jwt', { session: false }),
@@ -344,6 +353,7 @@ app.get(
  * request body = movie.genre.genreName
  * response body = Genre.Name, Genre.Description
  */
+
 app.get(
   '/movies/genre/:genreName',
   passport.authenticate('jwt', { session: false }),
@@ -374,6 +384,7 @@ app.get(
  * request body = movie.Director.directorName
  * response body = Director.Name, Director.Bio, Director.Birth, Director.Death
  */
+
 app.get(
   '/movies/directors/:directorName',
   passport.authenticate('jwt', { session: false }),
@@ -422,6 +433,7 @@ app.get(
  * request body = user.username, user.password, user.email, user.birthday
  * response body = user.username, user.password, user.email, user.birthday
  */
+
 app.put(
   '/users/:username',
 
@@ -487,6 +499,7 @@ app.put(
  * request body = user.username, movies.movieID
  * response body = username*, password* (hashed), email*, birthday, favorites, _id, __v
  */
+
 app.delete(
   '/users/:username/:movieID',
   passport.authenticate('jwt', { session: false }),
@@ -513,6 +526,7 @@ app.delete(
  * request body = user.username
  * response body = 200 message that user was deleted
  */
+
 app.delete(
   '/users/:username',
   passport.authenticate('jwt', { session: false }),
